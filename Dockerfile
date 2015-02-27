@@ -68,11 +68,11 @@ RUN curl -sf -o jansson.tar.gz -L https://github.com/akheron/jansson/archive/mas
 	&& rm -r /usr/src/jansson
 
 WORKDIR /usr/src
-RUN curl -sf -o /usr/src/asterisk.tar.gz -L http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-$ASTERISKVER-current.tar.gz \
-	&& mkdir /usr/src/asterisk \
+RUN curl -sf -o asterisk.tar.gz -L http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-$ASTERISKVER-current.tar.gz \
+	&& mkdir asterisk \
 	&& tar -xzf /usr/src/asterisk.tar.gz -C /usr/src/asterisk --strip-components=1 \
-	&& rm /usr/src/asterisk.tar.gz \
-	&& cd /usr/src/asterisk \
+	&& rm asterisk.tar.gz \
+	&& cd asterisk \
 	&& ./configure \
 	&& contrib/scripts/get_mp3_source.sh \
 	&& make menuselect.makeopts \
@@ -84,10 +84,10 @@ RUN curl -sf -o /usr/src/asterisk.tar.gz -L http://downloads.asterisk.org/pub/te
 
 WORKDIR /var/lib/asterisk/sounds
 RUN curl -sf http://downloads.asterisk.org/pub/telephony/sounds/asterisk-extra-sounds-en-wav-current.tar.gz \
-	&& tar xfz asterisk-extra-sounds-en-wav-current.tar.gz \
+	&& tar -xzf asterisk-extra-sounds-en-wav-current.tar.gz \
 	&& rm -f asterisk-extra-sounds-en-wav-current.tar.gz \
 	&& curl -sf http://downloads.asterisk.org/pub/telephony/sounds/asterisk-extra-sounds-en-g722-current.tar.gz \
-	&& tar xfz asterisk-extra-sounds-en-g722-current.tar.gz \
+	&& tar -xzf asterisk-extra-sounds-en-g722-current.tar.gz \
 	&& rm -f asterisk-extra-sounds-en-g722-current.tar.gz
 
 RUN useradd -m $ASTERISKUSER \
