@@ -28,7 +28,7 @@ COPY start-amportal.sh /etc/my_init.d/start-amportal.sh
 # Install Required Dependencies
 RUN sed -i 's/archive.ubuntu.com/mirrors.digitalocean.com/' /etc/apt/sources.list \
 	&& apt-get update \
-	&& apt-get install -y build-essential linux-headers-`uname -r` openssh-server apache2 mysql-server\
+	&& apt-get install -y build-essential apache2 mysql-server\
 		mysql-client bison flex php5 php5-curl php5-cli php5-mysql php-pear php-db php5-gd curl sox\
 		libncurses5-dev libssl-dev libmysqlclient-dev mpg123 libxml2-dev libnewt-dev sqlite3\
 		libsqlite3-dev pkg-config automake libtool autoconf subversion unixodbc-dev uuid uuid-dev\
