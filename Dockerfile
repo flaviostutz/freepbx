@@ -2,11 +2,11 @@ FROM phusion/baseimage
 MAINTAINER Jason Martin <jason@greenpx.co.uk>
 
 # Set environment variables
-ENV DEBIAN_FRONTEND noninteractive \
-	ASTERISKUSER asterisk \
-	ASTERISK_DB_PW pass123 \
-	ASTERISKVER 13 \
-	FREEPBXVER 12.0.21 
+ENV DEBIAN_FRONTEND noninteractive
+ENV ASTERISKUSER asterisk
+ENV ASTERISK_DB_PW pass123
+ENV ASTERISKVER 13
+ENV FREEPBXVER 12.0.21 
 
 CMD ["/sbin/my_init"]
 
