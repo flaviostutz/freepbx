@@ -83,10 +83,10 @@ RUN curl -sf -o asterisk.tar.gz -L http://downloads.asterisk.org/pub/telephony/a
 	&& ldconfig
 
 WORKDIR /var/lib/asterisk/sounds
-RUN curl -sf http://downloads.asterisk.org/pub/telephony/sounds/asterisk-extra-sounds-en-wav-current.tar.gz \
+RUN curl -sf -o asterisk-extra-sounds-en-wav-current.tar.gz -L http://downloads.asterisk.org/pub/telephony/sounds/asterisk-extra-sounds-en-wav-current.tar.gz \
 	&& tar -xzf asterisk-extra-sounds-en-wav-current.tar.gz \
 	&& rm -f asterisk-extra-sounds-en-wav-current.tar.gz \
-	&& curl -sf http://downloads.asterisk.org/pub/telephony/sounds/asterisk-extra-sounds-en-g722-current.tar.gz \
+	&& curl -sf -o asterisk-extra-sounds-en-g722-current.tar.gz -L http://downloads.asterisk.org/pub/telephony/sounds/asterisk-extra-sounds-en-g722-current.tar.gz \
 	&& tar -xzf asterisk-extra-sounds-en-g722-current.tar.gz \
 	&& rm -f asterisk-extra-sounds-en-g722-current.tar.gz
 
@@ -115,9 +115,9 @@ RUN /etc/init.d/mysql start \
 	&& mysql -u root -e "flush privileges;"
 
 WORKDIR /usr/src
-RUN curl -sf http://mirror.freepbx.org/freepbx-$FREEPBXVER.tgz \
+RUN curl -sf -o freepbx-$FREEPBXVER.tgz -L http://mirror.freepbx.org/freepbx-$FREEPBXVER.tgz \
 	&& tar xfz freepbx-$FREEPBXVER.tgz \
-	&& rm freepbx-$FREEPBXVER.tgz
+	&& rm freepbx-$FREEPBXVER.tgz \
 	&& cd /usr/src/freepbx \
 	&& /etc/init.d/mysql start \
 	&& /etc/init.d/apache2 start \
