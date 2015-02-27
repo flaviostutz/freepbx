@@ -5,7 +5,7 @@ MAINTAINER Jason Martin <jason@greenpx.co.uk>
 ENV DEBIAN_FRONTEND noninteractive
 ENV ASTERISKUSER asterisk
 ENV ASTERISK_DB_PW pass123
-ENV ASTERISKVER 13
+ENV ASTERISKVER 13.1
 ENV FREEPBXVER 12.0.21 
 
 CMD ["/sbin/my_init"]
@@ -68,7 +68,7 @@ RUN curl -sf -o jansson.tar.gz -L https://github.com/akheron/jansson/archive/mas
 	&& rm -r /usr/src/jansson
 
 WORKDIR /usr/src
-RUN curl -sf -o asterisk.tar.gz -L http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-$ASTERISKVER-current.tar.gz \
+RUN curl -sf -o asterisk.tar.gz -L http://downloads.asterisk.org/pub/telephony/certified-asterisk/certified-asterisk-$ASTERISKVER-current.tar.gz \
 	&& mkdir asterisk \
 	&& tar -xzf /usr/src/asterisk.tar.gz -C /usr/src/asterisk --strip-components=1 \
 	&& rm asterisk.tar.gz \
