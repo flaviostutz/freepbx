@@ -1,7 +1,7 @@
 FROM phusion/baseimage
 MAINTAINER Jason Martin <jason@greenpx.co.uk>
 
-# Set correct environment variables.
+# Set environment variables
 ENV DEBIAN_FRONTEND noninteractive
 ENV ASTERISKUSER asterisk
 ENV ASTERISK_DB_PW pass123
@@ -103,7 +103,7 @@ RUN useradd -m $ASTERISKUSER \
 
 RUN sed -i 's/\(^upload_max_filesize = \).*/\120M/' /etc/php5/apache2/php.ini \
 	&& cp /etc/apache2/apache2.conf /etc/apache2/apache2.conf_orig \
-	&& sed -i 's/^\(User\|Group\).*/\1 asterisk/' /etc/apache2/apache2.conf
+	&& sed -i 's/^\(User\|Group\).*/\1 asterisk/' /etc/apache2/apache2.conf \
 	&& sed -i 's/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 
 # Configure Asterisk database in MYSQL
