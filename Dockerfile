@@ -140,5 +140,3 @@ RUN curl -sf -o freepbx-$FREEPBXVER.tgz -L http://mirror.freepbx.org/freepbx-$FR
 	&& ln -s /var/lib/asterisk/moh /var/lib/asterisk/mohmp3 \
 	&& rm -r /usr/src/freepbx
 
-VOLUME /var/lib/mysql
-VOLUME /freepbx
