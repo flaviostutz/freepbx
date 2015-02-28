@@ -1,4 +1,4 @@
-# FreePBX
+# FreePBX on Docker
 
 Working but not yet finished...
 
@@ -14,7 +14,7 @@ Working but not yet finished...
 docker run --net=host -d -t jmar71n/freepbx
 ```
 
-Test it out by visiting your hosts ip address.
+Test it out by visiting your hosts ip address in a browser.
 
 ### My to do list
 
@@ -23,4 +23,5 @@ Test it out by visiting your hosts ip address.
  * Reduce memory usage of apache and mysql
  * Add Fail2Ban
  * Move mysql into its own containter
+ * Reduce number of image layers
  

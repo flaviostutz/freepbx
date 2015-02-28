@@ -37,6 +37,9 @@ RUN sed -i 's/archive.ubuntu.com/mirrors.digitalocean.com/' /etc/apt/sources.lis
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
 
+COPY conf/my-small.cnf /etc/mysql/my.cnf
+COPY conf/mpm_prefork.conf /etc/apache2/mods-available/mpm_prefork.conf
+
 # Install PearDB
 RUN pear uninstall db \
 	&& pear install db-1.7.14
@@ -80,7 +83,8 @@ RUN curl -sf -o asterisk.tar.gz -L http://downloads.asterisk.org/pub/telephony/c
 	&& make \
 	&& make install \
 	&& make config \
-	&& ldconfig
+	&& ldconfig \
+	&& rm -r /usr/src/asterisk
 
 WORKDIR /var/lib/asterisk/sounds
 RUN curl -sf -o asterisk-extra-sounds-en-wav-current.tar.gz -L http://downloads.asterisk.org/pub/telephony/sounds/asterisk-extra-sounds-en-wav-current.tar.gz \
@@ -135,3 +139,6 @@ RUN curl -sf -o freepbx-$FREEPBXVER.tgz -L http://mirror.freepbx.org/freepbx-$FR
 	&& amportal chown \
 	&& ln -s /var/lib/asterisk/moh /var/lib/asterisk/mohmp3 \
 	&& rm -r /usr/src/freepbx
+
+VOLUME /var/lib/mysql
+VOLUME /freepbx
