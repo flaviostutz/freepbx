@@ -4,7 +4,7 @@ MAINTAINER Jason Martin <jason@greenpx.co.uk>
 # Set environment variables
 ENV DEBIAN_FRONTEND noninteractive
 ENV ASTERISKUSER asterisk
-ENV ASTERISK_DB_PW pass123
+ENV ASTERISK_DB_PW Password
 ENV ASTERISKVER 13.1
 ENV FREEPBXVER 12.0.21 
 
@@ -37,6 +37,7 @@ RUN sed -i 's/archive.ubuntu.com/mirrors.digitalocean.com/' /etc/apt/sources.lis
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
 
+# Replace default conf files to reduce memory usage
 COPY conf/my-small.cnf /etc/mysql/my.cnf
 COPY conf/mpm_prefork.conf /etc/apache2/mods-available/mpm_prefork.conf
 
@@ -70,6 +71,7 @@ RUN curl -sf -o jansson.tar.gz -L https://github.com/akheron/jansson/archive/mas
 	&& make install \
 	&& rm -r /usr/src/jansson
 
+# Compile and Install Asterisk
 WORKDIR /usr/src
 RUN curl -sf -o asterisk.tar.gz -L http://downloads.asterisk.org/pub/telephony/certified-asterisk/certified-asterisk-$ASTERISKVER-current.tar.gz \
 	&& mkdir asterisk \
@@ -86,6 +88,7 @@ RUN curl -sf -o asterisk.tar.gz -L http://downloads.asterisk.org/pub/telephony/c
 	&& ldconfig \
 	&& rm -r /usr/src/asterisk
 
+# Download extra sounds
 WORKDIR /var/lib/asterisk/sounds
 RUN curl -sf -o asterisk-extra-sounds-en-wav-current.tar.gz -L http://downloads.asterisk.org/pub/telephony/sounds/asterisk-extra-sounds-en-wav-current.tar.gz \
 	&& tar -xzf asterisk-extra-sounds-en-wav-current.tar.gz \
@@ -94,6 +97,7 @@ RUN curl -sf -o asterisk-extra-sounds-en-wav-current.tar.gz -L http://downloads.
 	&& tar -xzf asterisk-extra-sounds-en-g722-current.tar.gz \
 	&& rm -f asterisk-extra-sounds-en-g722-current.tar.gz
 
+# Add Asterisk user
 RUN useradd -m $ASTERISKUSER \
 	&& chown $ASTERISKUSER. /var/run/asterisk \ 
 	&& chown -R $ASTERISKUSER. /etc/asterisk \
@@ -105,6 +109,7 @@ RUN useradd -m $ASTERISKUSER \
 	&& chown -R $ASTERISKUSER. /var/www/* \
 	&& rm -rf /var/www/html
 
+# Configure apache
 RUN sed -i 's/\(^upload_max_filesize = \).*/\120M/' /etc/php5/apache2/php.ini \
 	&& cp /etc/apache2/apache2.conf /etc/apache2/apache2.conf_orig \
 	&& sed -i 's/^\(User\|Group\).*/\1 asterisk/' /etc/apache2/apache2.conf \
@@ -118,6 +123,7 @@ RUN /etc/init.d/mysql start \
 	&& mysql -u root -e "GRANT ALL PRIVILEGES ON asteriskcdrdb.* TO $ASTERISKUSER@localhost IDENTIFIED BY '$ASTERISK_DB_PW';" \
 	&& mysql -u root -e "flush privileges;"
 
+# Download and install FreePBX
 WORKDIR /usr/src
 RUN curl -sf -o freepbx-$FREEPBXVER.tgz -L http://mirror.freepbx.org/freepbx-$FREEPBXVER.tgz \
 	&& tar xfz freepbx-$FREEPBXVER.tgz \
