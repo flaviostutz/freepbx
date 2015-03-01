@@ -4,10 +4,10 @@ Working but not yet finished...
 
 ### Image includes
 
- * phusion/baseimage
+ * phusion/baseimage (Ubuntu 14.04)
  * LAMP stack (apache2, mysql, php)
  * Certified Asterisk 13.1
- * FreePBX
+ * FreePBX 12
  
 ### Run your FreePBX image
 ```bash
@@ -18,9 +18,9 @@ Test it out by visiting your hosts ip address in a browser.
 
 ### My to do list
 
- * Add volumes for freepbx backup/restore
- * Add volumes for logs
- * Reduce memory usage of apache and mysql
+ * Add volume for freepbx backup/restore
+ * Add volume for logs
+ * ~~Reduce memory usage of apache and mysql~~
  * Add Fail2Ban
  * Move mysql into its own containter
  * Reduce number of image layers
