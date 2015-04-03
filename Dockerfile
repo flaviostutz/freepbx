@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV ASTERISKUSER asterisk
 ENV ASTERISK_DB_PW Password
 ENV ASTERISKVER 13.1
-ENV FREEPBXVER 12.0.21 
+ENV FREEPBXVER 12.0.43
 
 CMD ["/sbin/my_init"]
 
@@ -28,12 +28,14 @@ COPY start-amportal.sh /etc/my_init.d/start-amportal.sh
 # Install Required Dependencies
 RUN sed -i 's/archive.ubuntu.com/mirrors.digitalocean.com/' /etc/apt/sources.list \
 	&& apt-get update \
+	&& apt-get upgrade -y \
 	&& apt-get install -y build-essential apache2 mysql-server\
 		mysql-client bison flex php5 php5-curl php5-cli php5-mysql php-pear php-db php5-gd curl sox\
 		libncurses5-dev libssl-dev libmysqlclient-dev mpg123 libxml2-dev libnewt-dev sqlite3\
 		libsqlite3-dev pkg-config automake libtool autoconf subversion unixodbc-dev uuid uuid-dev\
 		libasound2-dev libogg-dev libvorbis-dev libcurl4-openssl-dev libical-dev libneon27-dev libsrtp0-dev\
 		libspandsp-dev \
+		libmyodbc \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
 
@@ -47,10 +49,10 @@ RUN pear uninstall db \
 
 # Compile and install pjproject
 WORKDIR /usr/src
-RUN curl -sf -o pjproject.tar.gz -L https://github.com/asterisk/pjproject/archive/master.tar.gz \
+RUN curl -sf -o pjproject.tar.bz2 -L http://www.pjsip.org/release/2.3/pjproject-2.3.tar.bz2 \
 	&& mkdir pjproject \
-	&& tar -xzf pjproject.tar.gz -C pjproject --strip-components=1 \
-	&& rm pjproject.tar.gz \
+	&& tar -xf pjproject.tar.bz2 -C pjproject --strip-components=1 \
+	&& rm pjproject.tar.bz2 \
 	&& cd pjproject \
 	&& ./configure --enable-shared --disable-sound --disable-resample --disable-video --disable-opencore-amr \ 
 	&& make dep \
@@ -60,7 +62,7 @@ RUN curl -sf -o pjproject.tar.gz -L https://github.com/asterisk/pjproject/archiv
 
 # Compile and Install jansson
 WORKDIR /usr/src
-RUN curl -sf -o jansson.tar.gz -L https://github.com/akheron/jansson/archive/master.tar.gz \
+RUN curl -sf -o jansson.tar.gz -L http://www.digip.org/jansson/releases/jansson-2.7.tar.gz \
 	&& mkdir jansson \
 	&& tar -xzf jansson.tar.gz -C jansson --strip-components=1 \
 	&& rm jansson.tar.gz \
@@ -122,6 +124,7 @@ RUN /etc/init.d/mysql start \
 	&& mysql -u root -e "GRANT ALL PRIVILEGES ON asterisk.* TO $ASTERISKUSER@localhost IDENTIFIED BY '$ASTERISK_DB_PW';" \
 	&& mysql -u root -e "GRANT ALL PRIVILEGES ON asteriskcdrdb.* TO $ASTERISKUSER@localhost IDENTIFIED BY '$ASTERISK_DB_PW';" \
 	&& mysql -u root -e "flush privileges;"
+	
 
 # Download and install FreePBX
 WORKDIR /usr/src
@@ -134,10 +137,6 @@ RUN curl -sf -o freepbx-$FREEPBXVER.tgz -L http://mirror.freepbx.org/freepbx-$FR
 	&& /usr/sbin/asterisk \
 	&& ./install_amp --installdb --username=$ASTERISKUSER --password=$ASTERISK_DB_PW \
 	&& amportal chown \
-	&& amportal a ma download manager \
-	&& amportal chown \
-	&& amportal a ma install manager \
-	&& amportal chown \
 	#&& amportal a ma installall \
 	#&& amportal chown \
 	&& amportal a reload \
@@ -146,3 +145,11 @@ RUN curl -sf -o freepbx-$FREEPBXVER.tgz -L http://mirror.freepbx.org/freepbx-$FR
 	&& ln -s /var/lib/asterisk/moh /var/lib/asterisk/mohmp3 \
 	&& rm -r /usr/src/freepbx
 
+#Make CDRs work
+COPY conf/cdr/odbc.ini /etc/odbc.ini
+COPY conf/cdr/odbcinst.ini /etc/odbcinst.ini
+COPY conf/cdr/cdr_adaptive_odbc.conf /etc/asterisk/cdr_adaptive_odbc.conf
+RUN chown asterisk:asterisk /etc/asterisk/cdr_adaptive_odbc.conf \
+	&& chmod 775 /etc/asterisk/cdr_adaptive_odbc.conf
+
+WORKDIR /
