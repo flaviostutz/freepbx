@@ -36,6 +36,7 @@ RUN sed -i 's/archive.ubuntu.com/mirrors.digitalocean.com/' /etc/apt/sources.lis
 		libasound2-dev libogg-dev libvorbis-dev libcurl4-openssl-dev libical-dev libneon27-dev libsrtp0-dev\
 		libspandsp-dev \
 		libmyodbc \
+		sox \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
 
