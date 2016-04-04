@@ -1,7 +1,5 @@
 # FreePBX on Docker
 
-I am currently using this in an office with about 50 extension. So far I have not had any problems.
-
 ### Image includes
 
  * phusion/baseimage (Ubuntu 14.04)
