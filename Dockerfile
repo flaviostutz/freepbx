@@ -175,8 +175,8 @@ RUN chown asterisk:asterisk /etc/asterisk/cdr_adaptive_odbc.conf \
 WORKDIR /usr/src
 RUN curl -sf -o freepbx.tgz -L http://mirror.freepbx.org/modules/packages/freepbx/freepbx-13.0-latest.tgz \
 	&& tar xfz freepbx.tgz \
-	&& rm freepbx.tgz
-RUN cd /usr/src/freepbx \
+	&& rm freepbx.tgz \
+	&& cd /usr/src/freepbx \
 	&& /etc/init.d/mysql start \
 	&& mkdir /var/www/html \
 	&& /etc/init.d/apache2 start \
