@@ -4,7 +4,7 @@
 
  * phusion/baseimage (Ubuntu 14.04)
  * LAMP stack (apache2, mysql, php)
- * Certified Asterisk 13.1
+ * Asterisk 13
  * FreePBX 13
  
 
@@ -18,5 +18,5 @@ Test it out by visiting your hosts ip address in a browser.
 
 ### Fork ME
 
-Please feel free to fork or contribite this image.
+Please feel free to fork or contribite to this image.
 [https://bitbucket.org/jmar71n/docker-freepbx/src/]
