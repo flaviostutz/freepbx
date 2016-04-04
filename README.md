@@ -18,7 +18,7 @@ docker run --net=host -d -t jmar71n/freepbx
 
 Test it out by visiting your hosts ip address in a browser.
 
-### My to do list
+### Fork ME
 
- * Add Fail2Ban
- * Reduce number of image layers
+Please feel free to fork or contribite to this image.
+[https://bitbucket.org/jmar71n/docker-freepbx/src/]
