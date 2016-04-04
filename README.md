@@ -5,7 +5,7 @@
  * phusion/baseimage (Ubuntu 14.04)
  * LAMP stack (apache2, mysql, php)
  * Certified Asterisk 13.1
- * FreePBX 12
+ * FreePBX 13
  
 
 
