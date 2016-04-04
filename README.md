@@ -18,5 +18,5 @@ Test it out by visiting your hosts ip address in a browser.
 
 ### Fork ME
 
-Please feel free to fork or contribite to this image.
+Please feel free to fork or contribite this image.
 [https://bitbucket.org/jmar71n/docker-freepbx/src/]
