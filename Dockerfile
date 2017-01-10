@@ -1,4 +1,4 @@
-FROM phusion/baseimage
+FROM phusion/baseimage:0.9.18
 MAINTAINER Jason Martin <jason@greenpx.co.uk>
 
 # Set environment variables
@@ -154,7 +154,8 @@ RUN useradd -m $ASTERISKUSER \
 RUN sed -i 's/\(^upload_max_filesize = \).*/\120M/' /etc/php5/apache2/php.ini \
 	&& cp /etc/apache2/apache2.conf /etc/apache2/apache2.conf_orig \
 	&& sed -i 's/^\(User\|Group\).*/\1 asterisk/' /etc/apache2/apache2.conf \
-	&& sed -i 's/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
+	&& sed -i 's/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf \
+        && a2enmod rewrite
 
 # Configure Asterisk database in MYSQL
 RUN /etc/init.d/mysql start \
@@ -184,6 +185,8 @@ RUN curl -sf -o freepbx.tgz -L http://mirror.freepbx.org/modules/packages/freepb
 	&& sleep 5 \
 	&& ./install -n \
 	&& fwconsole restart \
+        && fwconsole moduleadmin downloadinstall backup \
+        && fwconsole moduleadmin downloadinstall ivr \
 	&& rm -r /usr/src/freepbx
 
 WORKDIR /
