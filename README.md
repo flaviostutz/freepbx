@@ -10,9 +10,9 @@
 
 ### Run your FreePBX image
 ```bash
-docker run --net=host -d -t flaviostutz/freepbx
+docker run --net=host -d -t flaviostutz/freepbx (preferred method due to NAT traversal challenges)
 OR
-docker run -d -p 5060-5061:5060-5061/udp -p 10000-10100:10000-10100/udp -p 6060:80/tcp -t flaviostutz/freepbx
+docker run -d -p 5060-5061:5060-5061/udp -p 10000-10100:10000-10100/udp -p 6060:80/tcp -t flaviostutz/freepbx (expect a lot of trouble with NAT traversal - not yet fully solved)
 ```
 
 Test it out by visiting your hosts ip address in a browser.
