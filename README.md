@@ -11,6 +11,8 @@
 ### Run your FreePBX image
 ```bash
 docker run --net=host -d -t flaviostutz/freepbx
+OR
+docker run -d -p 5060-5061:5060-5061/udp -p 10000-10100:10000-10100/udp -p 6060:80/tcp -t flaviostutz/freepbx
 ```
 
 Test it out by visiting your hosts ip address in a browser.
