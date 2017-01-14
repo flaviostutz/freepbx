@@ -10,7 +10,7 @@
 
 ### Run your FreePBX image
 ```bash
-docker run --net=host -d -t stutzlab/freepbx
+docker run --net=host -d -t flaviostutz/freepbx
 ```
 
 Test it out by visiting your hosts ip address in a browser.
