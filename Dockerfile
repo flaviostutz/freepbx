@@ -188,6 +188,9 @@ RUN curl -sf -o freepbx.tgz -L http://mirror.freepbx.org/modules/packages/freepb
 	&& fwconsole restart \
         && fwconsole moduleadmin downloadinstall backup \
         && fwconsole moduleadmin downloadinstall ivr \
+				&& fwconsole moduleadmin downloadinstall asterisk-cli \
+				&& fwconsole moduleadmin downloadinstall asteriskinfo \
+				&& fwconsole moduleadmin downloadinstall timeconditions \
 	&& rm -r /usr/src/freepbx
 
 #Install codec g729 (if you have a license)
