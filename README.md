@@ -17,6 +17,11 @@ docker run -d -p 5060-5061:5060-5061/udp -p 10000-10100:10000-10100/udp -p 6060:
 
 Test it out by visiting your hosts ip address in a browser.
 
+### Tips
+
+This image comes with pt-br sounds. To use it, open, at configuration portal, "Settings -> Asterisk SIP Settings -> Chan SIP Settings" and set "language=pt_br" at "Other SIP Settings"
+
+
 ### Fork ME
 This is originally a fork of https://bitbucket.org/jmar71n/docker-freepbx.git
 Fell free to contribute back!

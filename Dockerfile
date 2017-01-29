@@ -26,6 +26,7 @@ COPY start-amportal.sh /etc/my_init.d/start-amportal.sh
 RUN apt-get update \
 	&& apt-get upgrade -y \
 	&& apt-get install -y \
+	  wget
 		apache2 \
 		autoconf \
 		automake \
@@ -86,7 +87,7 @@ RUN curl -sf -o pjproject.tar.bz2 -L http://www.pjsip.org/release/2.4/pjproject-
 	&& cd pjproject-2.4 \
 	&& CFLAGS='-DPJ_HAS_IPV6=1' ./configure --enable-shared --disable-sound --disable-resample --disable-video --disable-opencore-amr \
 	&& make dep \
-	&& make \ 
+	&& make \
 	&& make install \
 	&& rm -r /usr/src/pjproject-2.4
 
@@ -140,7 +141,7 @@ RUN curl -sf -o asterisk-core-sounds-en-wav-current.tar.gz -L http://downloads.a
 
 # Add Asterisk user
 RUN useradd -m $ASTERISKUSER \
-	&& chown $ASTERISKUSER. /var/run/asterisk \ 
+	&& chown $ASTERISKUSER. /var/run/asterisk \
 	&& chown -R $ASTERISKUSER. /etc/asterisk \
 	&& chown -R $ASTERISKUSER. /var/lib/asterisk \
 	&& chown -R $ASTERISKUSER. /var/log/asterisk \
@@ -188,5 +189,28 @@ RUN curl -sf -o freepbx.tgz -L http://mirror.freepbx.org/modules/packages/freepb
         && fwconsole moduleadmin downloadinstall backup \
         && fwconsole moduleadmin downloadinstall ivr \
 	&& rm -r /usr/src/freepbx
+
+#Install codec g729 (if you have a license)
+#RUN cd /usr/lib/asterisk/modules &&
+#    wget http://asterisk.hosting.lv/bin/codec_g729-ast130-gcc4-glibc-x86_64-core2.so &&
+#		mv codec_g729-ast130-gcc4-glibc-x86_64-core2.so codec_g729.so &&
+#	  chown asterisk:asterisk codec_g729.so &&
+#		chmod +x codec_g729.so
+
+# Install pt-br language
+#RUN mkdir /var/lib/asterisk/sounds/pt-br &&
+#    cd /var/lib/asterisk/sounds/pt-br &&
+#    wget -O core.zip https://www.asterisksounds.org/pt-br/download/asterisk-sounds-core-pt-BR-sln16.zip &&
+#		wget -O extra.zip https://www.asterisksounds.org/pt-br/download/asterisk-sounds-extra-pt-BR-sln16.zip &&
+#    unzip -o core.zip &&
+#    unzip -o extra.zip &&
+#    chown -R asterisk:asterisk /var/lib/asterisk/sounds/pt-br &&
+#    find /var/lib/asterisk/sounds/pt-br -type d -exec chmod 0775 {} \;
+
+#RUN for a in $(find . -name '*.sln16'); do\
+#      sox -t raw -e signed-integer -b 16 -c 1 -r 16k $a -t gsm -r 8k `echo $a|sed "s/.sln16/.gsm/"`;\
+#      sox -t raw -e signed-integer -b 16 -c 1 -r 16k $a -t raw -r 8k -e a-law `echo $a|sed "s/.sln16/.alaw/"`;\
+#      sox -t raw -e signed-integer -b 16 -c 1 -r 16k $a -t raw -r 8k -e mu-law `echo $a|sed "s/.sln16/.ulaw/"`;\
+#    done
 
 WORKDIR /
