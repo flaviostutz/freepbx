@@ -193,6 +193,10 @@ RUN curl -sf -o freepbx.tgz -L http://mirror.freepbx.org/modules/packages/freepb
 				&& fwconsole moduleadmin downloadinstall timeconditions \
 	&& rm -r /usr/src/freepbx
 
+#Delete old recordings to avoid wasting disk
+COPY conf/freepbx-delete-old-recordings /etc/cron.daily
+RUN chmod +x /etc/cron.daily/freepbx-delete-old-recordings
+
 #Install codec g729 (if you have a license)
 #RUN cd /usr/lib/asterisk/modules &&
 #    wget http://asterisk.hosting.lv/bin/codec_g729-ast130-gcc4-glibc-x86_64-core2.so &&

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo "Deleting FreePBX recordings older than 60 days..."
+find /var/spool/asterisk/monitor/* -name "*.wav" -mtime 60 -delete
+echo "Done."
