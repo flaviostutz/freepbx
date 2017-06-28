@@ -26,7 +26,7 @@ COPY start-amportal.sh /etc/my_init.d/start-amportal.sh
 RUN apt-get update \
 	&& apt-get upgrade -y \
 	&& apt-get install -y \
-	  wget
+	  wget \
 		apache2 \
 		autoconf \
 		automake \
@@ -205,13 +205,13 @@ RUN chmod +x /etc/cron.daily/freepbx-delete-old-recordings
 #		chmod +x codec_g729.so
 
 # Install pt-br language
-#RUN mkdir /var/lib/asterisk/sounds/pt-br &&
-#    cd /var/lib/asterisk/sounds/pt-br &&
-#    wget -O core.zip https://www.asterisksounds.org/pt-br/download/asterisk-sounds-core-pt-BR-sln16.zip &&
-#		wget -O extra.zip https://www.asterisksounds.org/pt-br/download/asterisk-sounds-extra-pt-BR-sln16.zip &&
-#    unzip -o core.zip &&
-#    unzip -o extra.zip &&
-#    chown -R asterisk:asterisk /var/lib/asterisk/sounds/pt-br &&
+#RUN mkdir /var/lib/asterisk/sounds/pt-br && \
+#    cd /var/lib/asterisk/sounds/pt-br && \
+#    wget -O core.zip https://www.asterisksounds.org/pt-br/download/asterisk-sounds-core-pt-BR-sln16.zip && \
+#		wget -O extra.zip https://www.asterisksounds.org/pt-br/download/asterisk-sounds-extra-pt-BR-sln16.zip && \
+#    unzip -o core.zip && \
+#    unzip -o extra.zip && \
+#    chown -R asterisk:asterisk /var/lib/asterisk/sounds/pt-br && \
 #    find /var/lib/asterisk/sounds/pt-br -type d -exec chmod 0775 {} \;
 
 #RUN for a in $(find . -name '*.sln16'); do\
