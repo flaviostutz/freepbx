@@ -1,0 +1,21 @@
+#!/bin/bash
+
+echo '** [freepbx] Starting Asterisk'
+
+if [ ! -f "/usr/sbin/fwconsole" ]; then
+  echo "** [freepbx] Can't seem to locate /usr/sbin/fwconsole.. Exitting"
+  exit 1
+fi
+
+fwconsole chown > /dev/null 2>&1
+fwconsole start > /dev/null 2>&1
+fwconsole reload > /dev/null 2>&1
+chown -R asterisk /etc/asterisk/*
+chown -R asterisk:asterisk /etc/amportal.conf
+
+service apache2 restart >/dev/null
+
+echo '** [freepbx] Web Server Started - Container Initialization Complete'
+
+mkdir -p /tmp/state
+touch /tmp/state/10-freepbx-init

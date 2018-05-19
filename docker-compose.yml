@@ -2,26 +2,20 @@ version: '3'
 services:
   freepbx:
     build: .
-    environment:
-      - DB_EMBEDDED=false
-      - DB_HOST=mysql
-      - DB_NAME=freepbx
-      - DB_USER=freepbx
-      - DB_PASS=freepbx
-      - ENABLE_FAIL2BAN=false
     ports:
       - "8080:80"
-  mysql:
-    image: "mysql:5.7"
-    environment:
-      - MYSQL_DATABASE=freepbx
-      - MYSQL_USER=freepbx
-      - MYSQL_PASSWORD=freepbx
-      - MYSQL_ROOT_PASSWORD=freepbx
-      - MYSQL_DEBUG=false
-    ports:
       - "3306:3306"
-    # volumes:
-    #   - /asterisk/mysql-data:/var/lib/mysql
+  # mysql:
+  #   image: "mysql:5.7"
+  #   environment:
+  #     - MYSQL_DATABASE=freepbx
+  #     - MYSQL_USER=freepbx
+  #     - MYSQL_PASSWORD=freepbx
+  #     - MYSQL_ROOT_PASSWORD=freepbx
+  #     - MYSQL_DEBUG=false
+  #   ports:
+  #     - "3306:3306"
+  #   # volumes:
+  #   #   - /asterisk/mysql-data:/var/lib/mysql
 
 
