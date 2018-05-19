@@ -1,5 +1,5 @@
 FROM tiredofit/nodejs:8-debian-latest
-LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
+LABEL maintainer="Flávio Stutz (flaviostutz@gmail.com)"
 
 ### Set Defaults
 ENV DB_EMBEDDED=TRUE \
@@ -13,50 +13,12 @@ RUN set -x ; \
 	apt-get update ; \
 	curl https://packages.sury.org/php/apt.gpg | apt-key add - ; \
 	echo 'deb https://packages.sury.org/php/ stretch main' > /etc/apt/sources.list.d/deb.sury.org.list ; \
-	apt-get update  ; \
-	\
-	### Install Development Dependencies
-	ASTERISK_BUILD_DEPS=' \
-	autoconf \
-	automake \
-	bison \
-	build-essential \
-	doxygen \
-	flex \
-	libasound2-dev \
-	libcurl4-openssl-dev \
-	libical-dev \
-	libiksemel-dev \
-	libjansson-dev \
-	libmariadbclient-dev \
-	libncurses5-dev \
-	libneon27-dev \
-	libnewt-dev \
-	libogg-dev \
-	libresample1-dev \
-	libspandsp-dev \
-	libsqlite3-dev \
-	libsrtp0-dev \
-	libssl-dev \
-	libtiff-dev \
-	libtool-bin \
-	libvorbis-dev \
-	libxml2-dev \
-	linux-headers-amd64 \
-	pkg-config \
-	python-dev \
-	subversion \
-	unixodbc-dev \
-	uuid-dev \
-	' \
-	; \
-	\
-	### Install Runtime Dependencies
-	apt-get install --no-install-recommends -y \
-	$ASTERISK_BUILD_DEPS \
+	apt-get update
+
+### Install Runtime Dependencies
+RUN apt-get install --no-install-recommends -y \
 	apache2 \
 	composer \
-	fail2ban \
 	flite \
 	ffmpeg \
 	git \
@@ -88,27 +50,57 @@ RUN set -x ; \
 	unixodbc \
 	uuid \
 	whois \
-	xmlstarlet \
-	; \
-	\
-	### Install MySQL Connector
-	cd /usr/src ; \
+	xmlstarlet
+
+### Install MySQL Connector
+RUN cd /usr/src ; \
 	curl -sSL  https://downloads.mariadb.com/Connectors/odbc/connector-odbc-2.0.15/mariadb-connector-odbc-2.0.15-ga-debian-x86_64.tar.gz | tar xvfz - -C /usr/src/ ; \
-	cp mariadb-connector-*/lib/libmaodbc.so /usr/lib/x86_64-linux-gnu/odbc/ ; \
-	\
-	### Add Users
-	addgroup --gid 2600 asterisk ; \
-	adduser --uid 2600 --gid 2600 --gecos "Asterisk User" --disabled-password asterisk ; \
-	\
-	### Install Jansson
-	git clone https://github.com/akheron/jansson.git /usr/src/jansson ; \
+	cp mariadb-connector-*/lib/libmaodbc.so /usr/lib/x86_64-linux-gnu/odbc/
+
+### Install build dependencies
+RUN apt-get install --no-install-recommends -y \
+	automake \
+	bison \
+	build-essential \
+	doxygen \
+	flex \
+	libasound2-dev \
+	libcurl4-openssl-dev \
+	libical-dev \
+	libiksemel-dev \
+	libjansson-dev \
+	libmariadbclient-dev \
+	libncurses5-dev \
+	libneon27-dev \
+	libnewt-dev \
+	libogg-dev \
+	libresample1-dev \
+	libspandsp-dev \
+	libsqlite3-dev \
+	libsrtp0-dev \
+	libssl-dev \
+	libtiff-dev \
+	libtool-bin \
+	libvorbis-dev \
+	libxml2-dev \
+	linux-headers-amd64 \
+	pkg-config \
+	python-dev \
+	subversion \
+	unixodbc-dev \
+	uuid-dev
+
+### Install Jansson
+RUN git clone https://github.com/akheron/jansson.git /usr/src/jansson ; \
 	cd /usr/src/jansson ; \
 	autoreconf -i ; \
 	./configure ; \
 	make ; \
-	make install ; \
-	\
-	### Build Asterisk
+	make install
+
+## Compile Asterisk
+RUN addgroup --gid 2600 asterisk ; \
+	adduser --uid 2600 --gid 2600 --gecos "Asterisk User" --disabled-password asterisk ; \
 	cd /usr/src ; \
 	curl -sSL http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-${ASTERISK_VERSION}-current.tar.gz | tar xvfz - -C /usr/src/ ; \
 	cd /usr/src/asterisk-${ASTERISK_VERSION}*/ ; \
@@ -127,10 +119,10 @@ RUN set -x ; \
 	--enable MOH-OPSOUND-GSM \
 	make ; \
 	make install ; \
-	ldconfig ; \
-	\
-	#### Add G729 Codecs
-	git clone https://github.com/BelledonneCommunications/bcg729 /usr/src/bcg729 ; \
+	ldconfig
+
+#### Add G729 Codecs
+RUN	git clone https://github.com/BelledonneCommunications/bcg729 /usr/src/bcg729 ; \
 	cd /usr/src/bcg729 ; \
 	git checkout tags/$BCG729_VERSION ; \
 	./autogen.sh ; \
@@ -144,30 +136,25 @@ RUN set -x ; \
 	./autogen.sh ; \
 	./configure --with-bcg729 --with-asterisk${ASTERISK_VERSION}0 --enable-penryn; \
 	make ; \
-	make install ; \
-	\
-	### Cleanup 
-	mkdir -p /var/run/fail2ban ; \
-	cd / ; \
+	make install
+
+### Cleanup
+RUN cd / ; \
 	rm -rf /usr/src/* /tmp/* ; \
-	apt-get purge -y $ASTERISK_BUILD_DEPS ; \
+	# apt-get purge -y $ASTERISK_BUILD_DEPS ; \
 	apt-get -y autoremove ; \
 	apt-get clean ; \
 	apt-get install -y make ; \
-	rm -rf /var/lib/apt/lists/* ; \
-	\
-	### FreePBX Hacks
-	sed -i -e "s/memory_limit = 128M /memory_limit = 256M/g" /etc/php/5.6/apache2/php.ini ; \
+	rm -rf /var/lib/apt/lists/*
+
+### FreePBX Hacks
+RUN sed -i -e "s/memory_limit = 128M /memory_limit = 256M/g" /etc/php/5.6/apache2/php.ini ; \
 	a2disconf other-vhosts-access-log.conf ; \
 	a2enmod rewrite ; \
 	rm -rf /var/log/* ; \
 	mkdir -p /var/log/asterisk ; \
 	mkdir -p /var/log/apache2 ; \
 	mkdir -p /var/log/httpd ; \
-	\
-	### Zabbix Setup
-	echo '%zabbix ALL=(asterisk) NOPASSWD:/usr/sbin/asterisk' >> /etc/sudoers ; \
-	\
 	### Setup for Data Persistence
 	mkdir -p /assets/config/var/lib/ /assets/config/home/ ; \
 	mv /home/asterisk /assets/config/home/ ; \
@@ -183,14 +170,16 @@ RUN set -x ; \
 	rm -rf /etc/asterisk ; \
 	ln -s /data/etc/asterisk /etc/asterisk
 
-### Networking Configuration
 EXPOSE 80 443 4569 5060 5160 8001 8003 8008 8009 18000-20000/udp
 
-ADD etc /
+ADD etc /etc
 ADD freepbx-install.sh /opt
 ADD freepbx-delete-old-recordings /etc/cron.daily
 
 RUN /opt/freepbx-install.sh
+
+#enable auto-redirecting to /admin
+RUN rm /var/www/html/index.html
 
 #recordings data
 VOLUME [ "/var/spool/asterisk/monitor/" ]

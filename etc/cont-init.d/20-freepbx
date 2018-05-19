@@ -10,8 +10,6 @@ fi
 fwconsole chown > /dev/null 2>&1
 fwconsole start > /dev/null 2>&1
 fwconsole reload > /dev/null 2>&1
-chown -R asterisk /etc/asterisk/*
-chown -R asterisk:asterisk /etc/amportal.conf
 
 service apache2 restart >/dev/null
 

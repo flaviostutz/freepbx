@@ -1,14 +1,5 @@
 #!/usr/bin/with-contenv bash
 
-service mysql stop
-mkdir -p /var/lib/mysql
-
-    if [ ! -f /var/lib/mysql/mysql ]; then
-    echo '** [mysql] New Embedded Database Detected, setting up..'
-    cp -R /assets/config/var/lib/mysql/* /var/lib/mysql
-    fi
-
-chown -R mysql:mysql /var/lib/mysql 
 service mysql start
 
 mkdir -p /tmp/state
