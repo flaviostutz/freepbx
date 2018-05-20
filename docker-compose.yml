@@ -5,6 +5,7 @@ services:
     ports:
       - "8080:80"
       - "3306:3306"
+    network_mode: bridge
   # mysql:
   #   image: "mysql:5.7"
   #   environment:

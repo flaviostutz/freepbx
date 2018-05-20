@@ -1,187 +1,92 @@
-FROM tiredofit/nodejs:8-debian-latest
-LABEL maintainer="Flávio Stutz (flaviostutz@gmail.com)"
+#FROM technoexpress/freepbx
+#FROM adito/freepbx
+#LABEL maintainer="Flávio Stutz (flaviostutz@gmail.com)"
 
-### Set Defaults
-ENV DB_EMBEDDED=TRUE \
-	ENABLE_CRON=TRUE \
-	ENABLE_SMTP=TRUE \
-	ASTERISK_VERSION=14 \
-	BCG729_VERSION=1.0.4
+FROM debian:8
 
-### Install Dependencies
-RUN set -x ; \
-	apt-get update ; \
-	curl https://packages.sury.org/php/apt.gpg | apt-key add - ; \
-	echo 'deb https://packages.sury.org/php/ stretch main' > /etc/apt/sources.list.d/deb.sury.org.list ; \
-	apt-get update
+ENV DEBIAN_FRONTEND noninteractive
 
-### Install Runtime Dependencies
-RUN apt-get install --no-install-recommends -y \
-	apache2 \
-	composer \
-	flite \
-	ffmpeg \
-	git \
-	g++ \
-	iproute2 \
-	iptables \
-	lame \
-	libiodbc2 \
-	libicu-dev \
-	libsrtp0 \
-	mariadb-client \
-	mariadb-server \
-	mpg123 \
-	net-tools \
-	php5.6 \
-	php5.6-cli \
-	php5.6-curl \
-	php5.6-gd \
-	php5.6-ldap \
-	php5.6-mbstring \
-	php5.6-mysql \
-	php5.6-xml \
-	php5.6-zip \
-	php-pear \
-	procps \
-	sox \
-	sqlite3 \
-	sudo \
-	unixodbc \
-	uuid \
-	whois \
-	xmlstarlet
+RUN apt-get update \
+	&& apt-get upgrade -y \
+	&& apt-get install -y build-essential openssh-server apache2 mysql-server\
+	mysql-client bison flex php5 php5-curl php5-cli php5-mysql php-pear php5-gd curl sox\
+	libncurses5-dev libssl-dev libmysqlclient-dev mpg123 libxml2-dev libnewt-dev sqlite3\
+	libsqlite3-dev pkg-config automake libtool autoconf git unixodbc-dev uuid uuid-dev\
+	libasound2-dev libogg-dev libvorbis-dev libicu-dev libcurl4-openssl-dev libical-dev libneon27-dev libsrtp0-dev\
+	libspandsp-dev sudo libmyodbc subversion libtool-bin python-dev\
+	aptitude cron fail2ban net-tools vim wget \
+	&& rm -rf /var/lib/apt/lists/*
 
-### Install MySQL Connector
-RUN cd /usr/src ; \
-	curl -sSL  https://downloads.mariadb.com/Connectors/odbc/connector-odbc-2.0.15/mariadb-connector-odbc-2.0.15-ga-debian-x86_64.tar.gz | tar xvfz - -C /usr/src/ ; \
-	cp mariadb-connector-*/lib/libmaodbc.so /usr/lib/x86_64-linux-gnu/odbc/
+RUN cd /usr/src \
+	&& wget -O jansson.tar.gz https://github.com/akheron/jansson/archive/v2.7.tar.gz \
+	&& tar xfz jansson.tar.gz \
+	&& rm -f jansson.tar.gz \
+	&& cd jansson-* \
+	&& autoreconf -i \
+	&& ./configure \
+	&& make \
+	&& make install \
+	&& rm -r /usr/src/jansson*
 
-### Install build dependencies
-RUN apt-get install --no-install-recommends -y \
-	automake \
-	bison \
-	build-essential \
-	doxygen \
-	flex \
-	libasound2-dev \
-	libcurl4-openssl-dev \
-	libical-dev \
-	libiksemel-dev \
-	libjansson-dev \
-	libmariadbclient-dev \
-	libncurses5-dev \
-	libneon27-dev \
-	libnewt-dev \
-	libogg-dev \
-	libresample1-dev \
-	libspandsp-dev \
-	libsqlite3-dev \
-	libsrtp0-dev \
-	libssl-dev \
-	libtiff-dev \
-	libtool-bin \
-	libvorbis-dev \
-	libxml2-dev \
-	linux-headers-amd64 \
-	pkg-config \
-	python-dev \
-	subversion \
-	unixodbc-dev \
-	uuid-dev
+RUN cd /usr/src \
+	&& wget http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-14-current.tar.gz \
+	&& tar xfz asterisk-14-current.tar.gz \
+	&& rm -f asterisk-14-current.tar.gz \
+	&& cd asterisk-* \
+	&& contrib/scripts/install_prereq install \
+	&& ./configure --with-pjproject-bundled \
+	&& make menuselect.makeopts \
+	&& sed -i "s/BUILD_NATIVE //" menuselect.makeopts \
+	&& make \
+	&& make install \
+	&& make config \
+	&& ldconfig \
+	&& update-rc.d -f asterisk remove \
+	&& rm -r /usr/src/asterisk*
 
-### Install Jansson
-RUN git clone https://github.com/akheron/jansson.git /usr/src/jansson ; \
-	cd /usr/src/jansson ; \
-	autoreconf -i ; \
-	./configure ; \
-	make ; \
-	make install
+RUN useradd -m asterisk \
+	&& chown asterisk. /var/run/asterisk \
+	&& chown -R asterisk. /etc/asterisk \
+	&& chown -R asterisk. /var/lib/asterisk \
+	&& chown -R asterisk. /var/log/asterisk \
+	&& chown -R asterisk. /var/spool/asterisk \
+	&& chown -R asterisk. /usr/lib/asterisk \
+	&& rm -rf /var/www/html
 
-## Compile Asterisk
-RUN addgroup --gid 2600 asterisk ; \
-	adduser --uid 2600 --gid 2600 --gecos "Asterisk User" --disabled-password asterisk ; \
-	cd /usr/src ; \
-	curl -sSL http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-${ASTERISK_VERSION}-current.tar.gz | tar xvfz - -C /usr/src/ ; \
-	cd /usr/src/asterisk-${ASTERISK_VERSION}*/ ; \
-	make distclean ; \
-	contrib/scripts/get_mp3_source.sh ; \
-	./configure --with-resample --with-pjproject-bundled --with-ssl=ssl --with-srtp ; \
-	make menuselect/menuselect menuselect-tree menuselect.makeopts ; \
-	menuselect/menuselect --disable BUILD_NATIVE \
-	--enable format_mp3 \
-	--enable app_fax \
-	--enable app_confbridge \
-	--enable codec_opus \
-	--enable codec_silk \
-	--enable BETTER_BACKTRACES \
-	--disable MOH-OPSOUND-WAV \
-	--enable MOH-OPSOUND-GSM \
-	make ; \
-	make install ; \
-	ldconfig
+RUN sed -i 's/^upload_max_filesize = 2M/upload_max_filesize = 120M/' /etc/php5/apache2/php.ini \
+	&& sed -i 's/^memory_limit = 128M/memory_limit = 256M/' /etc/php5/apache2/php.ini \
+	&& cp /etc/apache2/apache2.conf /etc/apache2/apache2.conf_orig \
+	&& sed -i 's/^\(User\|Group\).*/\1 asterisk/' /etc/apache2/apache2.conf \
+	&& sed -i 's/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 
-#### Add G729 Codecs
-RUN	git clone https://github.com/BelledonneCommunications/bcg729 /usr/src/bcg729 ; \
-	cd /usr/src/bcg729 ; \
-	git checkout tags/$BCG729_VERSION ; \
-	./autogen.sh ; \
-	./configure --libdir=/lib ; \
-	make ; \
-	make install ; \
-	\
-	mkdir -p /usr/src/asterisk-g72x ; \
-	curl https://bitbucket.org/arkadi/asterisk-g72x/get/default.tar.gz | tar xvfz - --strip 1 -C /usr/src/asterisk-g72x ; \
-	cd /usr/src/asterisk-g72x ; \
-	./autogen.sh ; \
-	./configure --with-bcg729 --with-asterisk${ASTERISK_VERSION}0 --enable-penryn; \
-	make ; \
-	make install
+COPY ./config/odbcinst.ini /etc/odbcinst.ini
+COPY ./config/odbc.ini /etc/odbc.ini
 
-### Cleanup
-RUN cd / ; \
-	rm -rf /usr/src/* /tmp/* ; \
-	# apt-get purge -y $ASTERISK_BUILD_DEPS ; \
-	apt-get -y autoremove ; \
-	apt-get clean ; \
-	apt-get install -y make ; \
-	rm -rf /var/lib/apt/lists/*
+RUN cd /usr/src \
+	&& wget http://mirror.freepbx.org/modules/packages/freepbx/freepbx-14.0-latest.tgz \
+	&& tar xfz freepbx-14.0-latest.tgz \
+	&& rm -f freepbx-14.0-latest.tgz \
+	&& cd freepbx \
+	&& chown mysql:mysql -R /var/lib/mysql/* \
+	&& /etc/init.d/mysql start \
+	&& ./start_asterisk start \
+	&& ./install -n \
+	&& fwconsole chown \
+	&& fwconsole ma upgradeall \
+	&& fwconsole ma downloadinstall announcement backup bulkhandler ringgroups timeconditions ivr restapi cel \
+	&& /etc/init.d/mysql stop \
+	&& rm -rf /usr/src/freepbx*
 
-### FreePBX Hacks
-RUN sed -i -e "s/memory_limit = 128M /memory_limit = 256M/g" /etc/php/5.6/apache2/php.ini ; \
-	a2disconf other-vhosts-access-log.conf ; \
-	a2enmod rewrite ; \
-	rm -rf /var/log/* ; \
-	mkdir -p /var/log/asterisk ; \
-	mkdir -p /var/log/apache2 ; \
-	mkdir -p /var/log/httpd ; \
-	### Setup for Data Persistence
-	mkdir -p /assets/config/var/lib/ /assets/config/home/ ; \
-	mv /home/asterisk /assets/config/home/ ; \
-	ln -s /data/home/asterisk /home/asterisk ; \
-	mv /var/lib/asterisk /assets/config/var/lib/ ; \
-	ln -s /data/var/lib/asterisk /var/lib/asterisk ; \
-	mkdir -p /assets/config/var/run/ ; \
-	mv /var/run/asterisk /assets/config/var/run/ ; \
-	mv /var/lib/mysql /assets/config/var/lib/ ; \
-	ln -s /data/var/run/asterisk /var/run/asterisk ; \
-	rm -rf /var/spool/asterisk ; \
-	ln -s /data/var/spool/asterisk /var/spool/asterisk ; \
-	rm -rf /etc/asterisk ; \
-	ln -s /data/etc/asterisk /etc/asterisk
+RUN a2enmod rewrite
 
-EXPOSE 80 443 4569 5060 5160 8001 8003 8008 8009 18000-20000/udp
+COPY ./run /run
+RUN chmod +x /run/*
 
-ADD etc /etc
-ADD freepbx-install.sh /opt
-ADD freepbx-delete-old-recordings /etc/cron.daily
-
-RUN /opt/freepbx-install.sh
-
-#enable auto-redirecting to /admin
-RUN rm /var/www/html/index.html
+CMD /run/startup.sh
 
 #recordings data
-VOLUME [ "/var/spool/asterisk/monitor/" ]
+VOLUME [ "/var/spool/asterisk/monitor" ]
 #database data
 VOLUME [ "/var/lib/mysql" ]
+#automatic backup
+VOLUME [ "/backup" ]

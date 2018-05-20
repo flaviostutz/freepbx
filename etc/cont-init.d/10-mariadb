@@ -1,6 +1,0 @@
-#!/usr/bin/with-contenv bash
-
-service mysql start
-
-mkdir -p /tmp/state
-touch /tmp/state/10-mariadb-init
