@@ -79,6 +79,23 @@ RUN cd /usr/src \
 
 RUN a2enmod rewrite
 
+#### Add G729 Codecs
+RUN	git clone https://github.com/BelledonneCommunications/bcg729 /usr/src/bcg729 ; \
+	cd /usr/src/bcg729 ; \
+	git checkout tags/$BCG729_VERSION ; \
+	./autogen.sh ; \
+	./configure --libdir=/lib ; \
+	make ; \
+	make install ; \
+	\
+	mkdir -p /usr/src/asterisk-g72x ; \
+	curl https://bitbucket.org/arkadi/asterisk-g72x/get/default.tar.gz | tar xvfz - --strip 1 -C /usr/src/asterisk-g72x ; \
+	cd /usr/src/asterisk-g72x ; \
+	./autogen.sh ; \
+	./configure --with-bcg729 --with-asterisk${ASTERISK_VERSION}0 --enable-penryn; \
+	make ; \
+	make install
+
 COPY ./run /run
 RUN chmod +x /run/*
 

@@ -44,9 +44,11 @@ while /bin/true; do
   ps aux |grep '/run/backup.sh' |grep -q -v grep
   BACKUPSCRIPT_STATUS=$?
 
+  echo "Checking running processes..."
   if [ $MYSQL_STATUS -ne 0 -o $ASTERISK_STATUS -ne 0 -o $BACKUPSCRIPT_STATUS -ne 0 ]; then
     echo "One of the processes has already exited."
     exit -1
   fi
+  echo "OK"
   sleep 60
 done
