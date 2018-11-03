@@ -1,7 +1,3 @@
-#FROM technoexpress/freepbx
-#FROM adito/freepbx
-#LABEL maintainer="Flávio Stutz (flaviostutz@gmail.com)"
-
 FROM debian:8
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -29,9 +25,9 @@ RUN cd /usr/src \
 	&& rm -r /usr/src/jansson*
 
 RUN cd /usr/src \
-	&& wget http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-14-current.tar.gz \
-	&& tar xfz asterisk-14-current.tar.gz \
-	&& rm -f asterisk-14-current.tar.gz \
+	&& wget http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-15.6.1.tar.gz \
+	&& tar xfz asterisk-15.6.1.tar.gz \
+	&& rm -f asterisk-15.6.1.tar.gz \
 	&& cd asterisk-* \
 	&& contrib/scripts/install_prereq install \
 	&& ./configure --with-pjproject-bundled \
@@ -100,6 +96,8 @@ COPY ./run /run
 RUN chmod +x /run/*
 
 CMD /run/startup.sh
+
+EXPOSE 80 3306 5060 5061 5160 5161 4569 10000-20000/udp
 
 #recordings data
 VOLUME [ "/var/spool/asterisk/monitor" ]

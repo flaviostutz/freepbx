@@ -1,22 +1,23 @@
-version: '3'
+version: '3.3'
 services:
   freepbx:
     build: .
+    image: flaviostutz/freepbx:14.0
     ports:
       - "8080:80"
       - "3306:3306"
+      - "5060:5060"
+      - "5160:5160"
+      - "5061:5061"
+      - "5161:5161"
+      - "10000-10100:10000-10100/udp"
     network_mode: bridge
-  # mysql:
-  #   image: "mysql:5.7"
-  #   environment:
-  #     - MYSQL_DATABASE=freepbx
-  #     - MYSQL_USER=freepbx
-  #     - MYSQL_PASSWORD=freepbx
-  #     - MYSQL_ROOT_PASSWORD=freepbx
-  #     - MYSQL_DEBUG=false
-  #   ports:
-  #     - "3306:3306"
-  #   # volumes:
-  #   #   - /asterisk/mysql-data:/var/lib/mysql
+    volumes:
+      - freepbx-backup:/backup
+      - freepbx-recordings:/var/spool/asterisk/monitor
+      - freepbx-mysql:/var/lib/mysql
 
-
+volumes:
+  freepbx-backup:
+  freepbx-mysql:
+  freepbx-recordings:
