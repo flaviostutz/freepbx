@@ -92,6 +92,8 @@ RUN	git clone https://github.com/BelledonneCommunications/bcg729 /usr/src/bcg729
 	make ; \
 	make install
 
+RUN sed -i 's/^user		= mysql/user		= root/' /etc/mysql/my.cnf
+
 COPY ./run /run
 RUN chmod +x /run/*
 
