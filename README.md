@@ -27,4 +27,4 @@ volumes:
 
 * Run ```docker-compose up -d```
 
-* Open admin panel at http://localhost:8080/
+* Open admin panel at http://localhost/
