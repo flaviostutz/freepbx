@@ -13,25 +13,15 @@ docker-compose.yml
 version: '3.3'
 services:
   freepbx:
+    build: .
     image: flaviostutz/freepbx:14.0
-    ports:
-      - "8080:80"
-      - "3306:3306"
-      - "5060:5060"
-      - "5160:5160"
-      - "5061:5061"
-      - "5161:5161"
-      - "10000-10100:10000-10100/udp"
-    network_mode: bridge
+    network_mode: host
     volumes:
       - freepbx-backup:/backup
       - freepbx-recordings:/var/spool/asterisk/monitor
-      - freepbx-mysql:/var/lib/mysql
-    restart: always
 
 volumes:
   freepbx-backup:
-  freepbx-mysql:
   freepbx-recordings:
 ```
 

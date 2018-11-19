@@ -97,6 +97,8 @@ RUN sed -i 's/^user		= mysql/user		= root/' /etc/mysql/my.cnf
 COPY ./run /run
 RUN chmod +x /run/*
 
+RUN chown asterisk:asterisk -R /var/spool/asterisk
+
 CMD /run/startup.sh
 
 EXPOSE 80 3306 5060 5061 5160 5161 4569 10000-20000/udp
