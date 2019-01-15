@@ -2,8 +2,10 @@
 
 ### Image includes
 
- * Asterisk 14
+ * Asterisk 15
  * FreePBX 14
+ * Automatic backup
+ * 
 
 
 ### Run FreePBX image
