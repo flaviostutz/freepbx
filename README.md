@@ -13,7 +13,6 @@ docker-compose.yml
 version: '3.3'
 services:
   freepbx:
-    build: .
     image: flaviostutz/freepbx:14.0
     network_mode: host
     restart: always
