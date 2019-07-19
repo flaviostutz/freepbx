@@ -25,9 +25,9 @@ RUN cd /usr/src \
 	&& rm -r /usr/src/jansson*
 
 RUN cd /usr/src \
-	&& wget http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-15.7.2.tar.gz \
-	&& tar xfz asterisk-15.7.2.tar.gz \
-	&& rm -f asterisk-15.7.2.tar.gz \
+	&& wget http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-15-current.tar.gz \
+	&& tar xfz asterisk-15-current.tar.gz \
+	&& rm -f asterisk-15-current.tar.gz \
 	&& cd asterisk-* \
 	&& contrib/scripts/install_prereq install \
 	&& ./configure --with-pjproject-bundled \
@@ -55,8 +55,26 @@ RUN sed -i 's/^upload_max_filesize = 2M/upload_max_filesize = 120M/' /etc/php5/a
 	&& sed -i 's/^\(User\|Group\).*/\1 asterisk/' /etc/apache2/apache2.conf \
 	&& sed -i 's/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 
-COPY ./config/odbcinst.ini /etc/odbcinst.ini
-COPY ./config/odbc.ini /etc/odbc.ini
+
+#WHERE I CAN FIND THESE TWO FILES ?
+#COPY ./config/odbcinst.ini /etc/odbcinst.ini
+#COPY ./config/odbc.ini /etc/odbc.ini 
+
+RUN echo "'[MySQL-asteriskcdrdb]\n\
+Description=MySQL connection to 'asteriskcdrdb' database \n\
+driver=MySQL \n\
+server=localhost \n\
+database=asteriskcdrdb \n\
+Port=3306 \n\
+Socket=/var/run/mysqld/mysqld.sock \n\
+option=3 \n\'" >> /etc/odbc.ini
+
+RUN echo "'[MySQL] \n\
+Description = ODBC for MySQL \n\
+Driver = /usr/lib/x86_64-linux-gnu/odbc/libmyodbc.so \n\
+Setup = /usr/lib/x86_64-linux-gnu/odbc/libodbcmyS.so \n\
+FileUsage = 1 \n\'" >> /etc/odbcinst.ini
+
 
 RUN cd /usr/src \
 	&& wget http://mirror.freepbx.org/modules/packages/freepbx/freepbx-14.0-latest.tgz \
@@ -94,6 +112,7 @@ RUN	git clone https://github.com/BelledonneCommunications/bcg729 /usr/src/bcg729
 
 RUN sed -i 's/^user		= mysql/user		= root/' /etc/mysql/my.cnf
 
+##WHERE IS THESE DIR  ./run ? DOCKER FAILED BUILD 
 COPY ./run /run
 RUN chmod +x /run/*
 
