@@ -26,8 +26,8 @@ RUN cd /usr/src \
 
 RUN cd /usr/src \
 	&& wget http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-15.7.3.tar.gz \
-	&& tar xfz asterisk-15.7.2.tar.gz \
-	&& rm -f asterisk-15.7.2.tar.gz \
+	&& tar xfz asterisk-15.7.3.tar.gz \
+	&& rm -f asterisk-15.7.3.tar.gz \
 	&& cd asterisk-* \
 	&& contrib/scripts/install_prereq install \
 	&& ./configure --with-pjproject-bundled \
