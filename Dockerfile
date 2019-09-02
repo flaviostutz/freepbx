@@ -25,7 +25,7 @@ RUN cd /usr/src \
 	&& rm -r /usr/src/jansson*
 
 RUN cd /usr/src \
-	&& wget http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-15.7.2.tar.gz \
+	&& wget http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-15.7.3.tar.gz \
 	&& tar xfz asterisk-15.7.2.tar.gz \
 	&& rm -f asterisk-15.7.2.tar.gz \
 	&& cd asterisk-* \
