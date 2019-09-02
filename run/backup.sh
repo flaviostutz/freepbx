@@ -1,6 +1,6 @@
 #!/bin/bash -x
 while /bin/true; do
-  sleep 1800
+  sleep 86400
   php /var/www/html/admin/modules/backup/bin/backup.php --id=1
   mkdir -p /backup/
   rm /backup/old.tgz
