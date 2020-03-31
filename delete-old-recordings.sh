@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 while /bin/true; do
   sleep 86400
   echo "Deleting recordings older than 60 days..."

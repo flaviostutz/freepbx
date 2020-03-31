@@ -1,14 +1,42 @@
 version: '3.3'
+
 services:
+
   freepbx:
     build: .
-    image: flaviostutz/freepbx:14.0
-    network_mode: host
+    image: flaviostutz/freepbx
+    ports:
+      - 8080:80
+      - 5060:5060/udp
+      - 5160:5160/udp
+      - 18000-18100:18000-18100/udp      
+    # network_mode: host
     restart: always
-    volumes:
-      - freepbx-backup:/backup
-      - freepbx-recordings:/var/spool/asterisk/monitor
+    # volumes:
+    #   - freepbx-backup:/backup
+    #   - freepbx-recordings:/var/spool/asterisk/monitor
+    # environment:
+    #   - DB_HOST=mariadb
+    #   - DB_PORT=3306
+    #   - DB_USER=freepbx
+    #   - DB_PASS=freepbx123    
+    #for fail2ban to work
+    cap_add:
+      - NET_ADMIN
+    privileged: true
+    # command: sleep 9999
 
-volumes:
-  freepbx-backup:
-  freepbx-recordings:
+  # mariadb:
+  #   image: mariadb:10.5.1
+  #   restart: always
+  #   #    volumes:
+  #   #  - ./volumes/db:/var/lib/mysql
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=freepbx123
+  #     - MYSQL_DATABASE=freepbx
+  #     - MYSQL_USER=freepbx
+  #     - MYSQL_PASSWORD=freepbx123
+  
+# volumes:
+#   freepbx-backup:
+#   freepbx-recordings:

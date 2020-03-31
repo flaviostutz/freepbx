@@ -1,6 +1,7 @@
-#!/bin/bash -x
+#!/bin/bash
 while /bin/true; do
   sleep 86400
+  echo "Running backup and storing to /backup/new.tgz..."
   php /var/www/html/admin/modules/backup/bin/backup.php --id=1
   mkdir -p /backup/
   rm /backup/old.tgz
