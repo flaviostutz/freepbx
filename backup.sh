@@ -3,8 +3,12 @@ while /bin/true; do
   sleep 86400
   echo "Running backup and storing to /backup/new.tgz..."
   php /var/www/html/admin/modules/backup/bin/backup.php --id=1
-  mkdir -p /backup/
-  rm /backup/old.tgz
-  mv /backup/new.tgz /backup/old.tgz
-  mv /var/spool/asterisk/backup/Default_backup/"$(ls -t /var/spool/asterisk/backup/Default_backup | head -1)" /backup/new.tgz
+  fwconsole bu --backup aadcce81-6b19-4d59-8321-057a716f3a83
+  if [ "$?" != "0" ]; then
+    echo "Error creating automatic backup"
+  else
+    mv /backup/new.tar.gz /backup/old.tar.gz
+    mv 2* new.tar.gz
+    echo "Backup saved to /backup/new.tar.gz"
+  fi
 done

@@ -4,40 +4,51 @@ FreePBX container image for running a complete Asterisk server.
 
 With this container you can create a telephony system in your office or house with integration among various office branches and integration to external VOIP providers with features such as call recording and IVR (interactive voice response) Menus.
 
+If "Apply" is taking too long, disable "Module signature check" (if you know what you're doing).
+
 This image is used in production deployments.
 
-### Image includes
+## Image includes
 
- * Asterisk 15
- * FreePBX 14
- * Modules: IVR, Time Conditions, Backup, Recording
- * Automatic backup script
+* Asterisk 16
+* FreePBX 15
+* Modules: IVR, Time Conditions, Backup, Recording
+* Automatic backup script
 
 
-### Run FreePBX image
+## Usage
 
-docker-compose.yml
-```
+* Create docker-compose.yml
+
+```yml
 version: '3.3'
 services:
   freepbx:
-    image: flaviostutz/freepbx:14.0
-    network_mode: host
+    build: .
+    image: flaviostutz/freepbx
+    ports:
+      - 8080:80
+      - 5060:5060/udp
+      - 5160:5160/udp
+      - 3306:3306
+      - 18000-18100:18000-18100/udp
     restart: always
+    environment:
+      - ADMIN_PASSWORD=admin123
     volumes:
-      - freepbx-backup:/backup
-      - freepbx-recordings:/var/spool/asterisk/monitor
+      - backup:/backup
+      - recordings:/var/spool/asterisk/monitor
 
 volumes:
-  freepbx-backup:
-  freepbx-recordings:
+  backup:
+  recordings:
 ```
 
 * Run ```docker-compose up -d```
 
-* Open admin panel at http://localhost/
+* Open admin panel at http://localhost:8080/admin/
 
-### Sample host preparation
+## Sample host preparation
 
 * Install Ubuntu 18.04
 
@@ -47,7 +58,7 @@ volumes:
 
   * edit /etc/netplan/50-cloud-init.yaml
 
-```
+```yml
 network:
     ethernets:
         eno1:
@@ -63,11 +74,23 @@ network:
     version: 2
 ```
 
-  * run ```netplan apply```
+* run ```netplan apply```
 
-  * In this example suppose you have a VOIP provider in another network (10.223.x.x) connected to the Asterisk host. You can skip routes and the secondary address if not needed
+* In this example suppose you have a VOIP provider in another network (10.223.x.x) connected to the Asterisk host. You can skip routes and the secondary address if not needed
 
-  * Run this container
+* Run this container
 
-  
+## ENVs
 
+* **ADMIN_PASSWORD** - GUI password for user 'admin'. required
+* **RTP_START** - port range from for RTP. defaults to 18000
+* **RTP_FINISH** - port range to for RTP. defaults to 18100
+* **USE_CHAN_SIP** - if true, disables pjsip and enables legacy chan_sip engine. defaults to false, meaning it will use pjsip engine by default
+* **ENABLE_AUTO_RESTORE** - if true, when the container is run, it will try to restore backup from /backup/new.tar.gz. An automatic backup keeps the backup file updated. This is useful when creating a new container instance (all MYSQL and other data is lost), so that your configurations are kept. defaults to true
+* **ENABLE_DELETE_OLD_RECORDINGS** - Delete all recordings older than 60 days if enabled. defaults to true
+* **DISABLE_SIGNATURE_CHECK** - Disables module signature checks so that configuration reloads are way faster. Disable if you know what module signing protection means. defaults to false
+
+## Volumes
+
+* **/backup** - keeps new.tar.gz and old.tar.gz automatic backups. Default backup job stores backup there too.
+* **/var/spool/asterisk/monitor** - call recording storage location
