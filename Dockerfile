@@ -1,5 +1,5 @@
 # FROM flaviostutz/asterisk
-FROM flaviostutz/asterisk:16.9.0.0
+FROM flaviostutz/asterisk:16.9.0.1
 
 ENV RTP_START '18000'
 ENV RTP_FINISH '18100'
@@ -51,17 +51,6 @@ RUN cd /usr/src && \
 
 ADD odbc.ini /etc/
 ADD odbcinst.ini /etc/
-
-# Needed for Asterisk to work properly (FROM image should have this already)
-RUN chown -R asterisk:asterisk /var/run/asterisk && \
-	chown -R asterisk:asterisk /etc/asterisk && \
-    chown -R asterisk:asterisk /var/lib/asterisk && \
-	chown -R asterisk:asterisk /var/log/asterisk && \
-	chown -R asterisk:asterisk /var/spool/asterisk && \
-	chown -R asterisk:asterisk /var/run/asterisk && \
-	chown -R asterisk:asterisk /usr/lib/asterisk && \
-    touch /etc/asterisk/modules.conf && \
-    touch /etc/asterisk/cdr.conf
 
 # FreePBX Hacks
 RUN    sed -i -e "s/memory_limit = 128M/memory_limit = 256M/g" /etc/php/5.6/apache2/php.ini && \
