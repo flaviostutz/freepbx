@@ -43,37 +43,25 @@ if [ $status -ne 0 ]; then
 fi
 
 
+
+
 # Apply configurations on initial startup
 if [ ! -f /init ]; then
 
-  echo "Applying initial configurations..."
-  /apply-initial-configs.sh
+  #restore previous backup if exists
+  if [ "$ENABLE_AUTO_RESTORE" == "true" ] && [ -f /backup/new.tar.gz ]; then
+    echo "Restoring backup from /backup/new.tar.gz"
+    fwconsole backup --restore /backup/new.tar.gz
+    echo "Done"
+
+  #apply initial configurations
+  else
+    echo "Applying initial configurations..."
+    /apply-initial-configs.sh
+
+  fi
 
   touch /init
-fi
-
-
-
-if [ "$ENABLE_AUTO_RESTORE" == "true" ]; then
-  #restore backup if exists
-  if [ -f /backup/new.tgz ]; then
-    echo "Restoring backup from /backup/new.tgz"
-    fwconsole backup --restore /backup/new.tgz
-    echo "Done"
-  fi
-  #restart freepbx to load everything fine after restoring backup
-  fwconsole stop
-  status=$?
-  if [ $status -ne 0 ]; then
-    echo "Failed to stop fwconsole: $status"
-    exit $status
-  fi
-  fwconsole start
-  status=$?
-  if [ $status -ne 0 ]; then
-    echo "Failed to start fwconsole: $status"
-    exit $status
-  fi
 fi
 
 

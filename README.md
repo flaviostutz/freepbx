@@ -88,7 +88,7 @@ network:
 * **RTP_FINISH** - port range to for RTP. defaults to 18100
 * **SIP_NAT_IP** - SIP NAT Public IP for calls. defaults to ip got from "curl ifconfig.me"
 * **USE_CHAN_SIP** - if true, disables pjsip and enables legacy chan_sip engine. defaults to false, meaning it will use pjsip engine by default
-* **ENABLE_AUTO_RESTORE** - if true, when the container is run, it will try to restore backup from /backup/new.tar.gz. An automatic backup keeps the backup file updated. This is useful when creating a new container instance (all MYSQL and other data is lost), so that your configurations are kept. defaults to true
+* **ENABLE_AUTO_RESTORE** - if true, when a new container instance is run, it will try to restore an existing backup from /backup/new.tar.gz. This backup is created each one hour automatically. This is useful when creating a new container instance (all MYSQL and other data is lost), so that your configurations are kept. defaults to true
 * **ENABLE_DELETE_OLD_RECORDINGS** - Delete all recordings older than 60 days if enabled. defaults to true
 * **DISABLE_SIGNATURE_CHECK** - Disables module signature checks so that configuration reloads are way faster. Disable if you know what module signing protection means. defaults to false
 
