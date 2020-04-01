@@ -30,8 +30,10 @@ cat Framework.json
 sed -i 's/"rtpstart": "10000"/"rtpstart": "'$RTP_START'"/' Sipsettings.json
 sed -i 's/"rtpend": "20000"/"rtpend": "'$RTP_FINISH'"/' Sipsettings.json
 #Public IP
-PUBLIC_IP=$(curl ifconfig.me)
-sed -i 's/"externip": "186.195.33.54"/"externip": "'$PUBLIC_IP'"/' Sipsettings.json
+if [ "$SIP_NAT_IP" == "" ]; then
+  SIP_NAT_IP=$(curl ifconfig.me)
+fi
+sed -i 's/"externip": "186.195.33.54"/"externip": "'$SIP_NAT_IP'"/' Sipsettings.json
 echo "Sipsettings.json"
 cat Sipsettings.json
 

@@ -6,6 +6,8 @@ With this container you can create a telephony system in your office or house wi
 
 If "Apply" is taking too long, disable "Module signature check" (if you know what you're doing).
 
+Thanks to https://github.com/tiredofit/docker-freepbx for various insights on the new Asterisk 15 installation.
+
 This image is used in production deployments.
 
 ## Image includes
@@ -24,7 +26,6 @@ This image is used in production deployments.
 version: '3.3'
 services:
   freepbx:
-    build: .
     image: flaviostutz/freepbx
     ports:
       - 8080:80
@@ -85,6 +86,7 @@ network:
 * **ADMIN_PASSWORD** - GUI password for user 'admin'. required
 * **RTP_START** - port range from for RTP. defaults to 18000
 * **RTP_FINISH** - port range to for RTP. defaults to 18100
+* **SIP_NAT_IP** - SIP NAT Public IP for calls. defaults to ip got from "curl ifconfig.me"
 * **USE_CHAN_SIP** - if true, disables pjsip and enables legacy chan_sip engine. defaults to false, meaning it will use pjsip engine by default
 * **ENABLE_AUTO_RESTORE** - if true, when the container is run, it will try to restore backup from /backup/new.tar.gz. An automatic backup keeps the backup file updated. This is useful when creating a new container instance (all MYSQL and other data is lost), so that your configurations are kept. defaults to true
 * **ENABLE_DELETE_OLD_RECORDINGS** - Delete all recordings older than 60 days if enabled. defaults to true
