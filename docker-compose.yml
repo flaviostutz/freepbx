@@ -26,7 +26,7 @@ services:
     restart: always
     ports:
       - "9292:8080"
-    
+
 volumes:
   backup:
   recordings:
