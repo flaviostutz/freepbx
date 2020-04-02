@@ -12,8 +12,8 @@ cd /tmp/basic-config/modulejson
 ##had to run on php because linux sha1 doesn't use ASCII encoding for this, giving different results
 ADMIN_PASS_SHA1=$(php /generate-sha1.php "$ADMIN_PASSWORD")
 sed -i 's/"password_sha1": "d033e22ae348aeb5660fc2140aec35850c4da997"/"password_sha1": "'$ADMIN_PASS_SHA1'"/' Core.json
-echo "Core.json"
-cat Core.json
+# echo "Core.json"
+# cat Core.json
 
 if [ "$USE_CHAN_SIP" == "true" ]; then
   sed -i 's/"ASTSIPDRIVER": "chan_pjsip"/"ASTSIPDRIVER": "chan_sip"/' Framework.json
@@ -21,8 +21,8 @@ fi
 if [ "$DISABLE_SIGNATURE_CHECK" == "true" ]; then
   sed -i 's/"SIGNATURECHECK": "1"/"SIGNATURECHECK": "0"/' Framework.json
 fi
-echo "Framework.json"
-cat Framework.json
+# echo "Framework.json"
+# cat Framework.json
 
 
 
@@ -34,8 +34,8 @@ if [ "$SIP_NAT_IP" == "" ]; then
   SIP_NAT_IP=$(curl ifconfig.me)
 fi
 sed -i 's/"externip": "186.195.33.54"/"externip": "'$SIP_NAT_IP'"/' Sipsettings.json
-echo "Sipsettings.json"
-cat Sipsettings.json
+# echo "Sipsettings.json"
+# cat Sipsettings.json
 
 echo "Assembling updated backup archive..."
 
