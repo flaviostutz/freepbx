@@ -8,6 +8,7 @@ ENV USE_CHAN_SIP 'false'
 ENV ENABLE_AUTO_RESTORE 'true'
 ENV ENABLE_DELETE_OLD_RECORDINGS 'true'
 ENV DISABLE_SIGNATURE_CHECK 'false'
+ENV MARIADB_REMOTE_ROOT_PASSWORD ''
 ENV SIP_NAT_IP ''
 
 ARG FREEPBX_VERSION=15.0-latest
@@ -109,10 +110,10 @@ ADD delete-old-recordings.sh /
 COPY basic-config.tar.gz /
 ADD generate-sha1.php /
 
+ADD index.html /var/www/html/
+
 #avoid taking too much to start by setting permissions (in container, no one will change files...)
 ADD freepbx_chown.conf /etc/asterisk/
-
-ENV MARIADB_REMOTE_ROOT_PASSWORD ''
 
 CMD [ "/startup.sh" ]
 
