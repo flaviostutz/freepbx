@@ -69,7 +69,8 @@ RUN curl --silent https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key
     echo 'deb https://deb.nodesource.com/node_10.x buster main' > /etc/apt/sources.list.d/nodesource.list && \
     echo 'deb-src https://deb.nodesource.com/node_10.x buster main' >> /etc/apt/sources.list.d/nodesource.list && \
     apt-get update && \
-    apt-get install -y nodejs yarn cron gettext libicu-dev pkg-config pkgconf
+    apt-get install -y pkgconf && \
+    apt-get install -y nodejs yarn cron gettext libicu-dev pkg-config
 
 # FreePBX
 RUN /etc/init.d/mysql start && \
