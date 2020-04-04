@@ -20,6 +20,7 @@ services:
     volumes:
       - backup:/backup
       - recordings:/var/spool/asterisk/monitor
+      - certificates:/etc/asterisk/keys
   
   adminer:
     image: adminer:4.7.6
@@ -30,3 +31,4 @@ services:
 volumes:
   backup:
   recordings:
+  certificates:

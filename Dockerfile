@@ -116,6 +116,10 @@ ADD index.html /var/www/html/
 #avoid taking too much to start by setting permissions (in container, no one will change files...)
 ADD freepbx_chown.conf /etc/asterisk/
 
+#enable https in admin
+RUN a2ensite default-ssl && \
+    a2enmod ssl
+
 CMD [ "/startup.sh" ]
 
 EXPOSE 80 3306 5060/udp 5061/udp 5160/udp 5161/udp 10000-40000/udp
@@ -125,3 +129,6 @@ VOLUME [ "/var/spool/asterisk/monitor" ]
 
 #automatic backup
 VOLUME [ "/backup" ]
+
+#lets encrypt and other certificate storage
+VOLUME [ "/etc/asterisk/keys" ]
