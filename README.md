@@ -96,3 +96,6 @@ network:
 
 * **/backup** - keeps new.tar.gz and old.tar.gz automatic backups. Default backup job stores backup there too.
 * **/var/spool/asterisk/monitor** - call recording storage location
+
+* **/etc/asterisk/keys** - Let's Encrypt and self signed certificates pub/private keys generated in pbxadmin
+
