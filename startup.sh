@@ -24,10 +24,10 @@ fi
 
 
 echo "Starting Apache..."
-if [ -f /etc/asterisk/keys/integration/certificate.pem ]; then
-  echo "Found certificate at /etc/asterisk/keys/integration/certificate.pem (possibly LetsEncrypt cert). Setting Apache to use it."
-  sed -i 's|/etc/ssl/certs/ssl-cert-snakeoil.pem|/etc/asterisk/keys/integration/certificate.pem|g' /etc/apache2/sites-enabled/default-ssl.conf
-  sed -i 's|/etc/ssl/private/ssl-cert-snakeoil.key|/etc/asterisk/keys/integration/webserver.key|g' /etc/apache2/sites-enabled/default-ssl.conf
+if [ -f /etc/asterisk/keys/$CERTIFICATE_DOMAIN.pem ]; then
+  echo "Found certificate at /etc/asterisk/keys/$CERTIFICATE_DOMAIN.pem (possibly LetsEncrypt cert). Setting Apache to use it."
+  sed -i 's|/etc/ssl/certs/ssl-cert-snakeoil.pem|/etc/asterisk/keys/'$CERTIFICATE_DOMAIN'.pem|g' /etc/apache2/sites-enabled/default-ssl.conf
+  sed -i 's|/etc/ssl/private/ssl-cert-snakeoil.key|/etc/asterisk/keys/'$CERTIFICATE_DOMAIN'.key|g' /etc/apache2/sites-enabled/default-ssl.conf
 fi
 
 /etc/init.d/apache2 start
