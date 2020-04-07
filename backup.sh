@@ -1,7 +1,9 @@
 #!/bin/bash
 while /bin/true; do
-  sleep 86400
+  echo "Waiting 1h for the next automatic backup..."
+  sleep 3600
   echo "Running backup and storing to /backup/new.tgz..."
+  cd /backup
   fwconsole bu --backup aadcce81-6b19-4d59-8321-057a716f3a83
   if [ "$?" != "0" ]; then
     echo "Error creating automatic backup"
