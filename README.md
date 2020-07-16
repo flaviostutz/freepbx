@@ -1,5 +1,8 @@
 # FreePBX on Docker
 
+[<img src="https://img.shields.io/docker/pulls/flaviostutz/freepbx"/>](https://hub.docker.com/r/flaviostutz/freepbx)
+[<img src="https://img.shields.io/docker/automated/flaviostutz/freepbx"/>](https://hub.docker.com/r/flaviostutz/freepbx)
+
 FreePBX container image for running a complete Asterisk server.
 
 With this container you can create a telephony system in your office or house with integration among various office branches and integration to external VOIP providers with features such as call recording and IVR (interactive voice response) Menus.
