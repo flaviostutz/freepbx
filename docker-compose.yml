@@ -17,6 +17,7 @@ services:
       - MARIADB_REMOTE_ROOT_PASSWORD=admin123
       - ADMIN_PASSWORD=admin123
       - DISABLE_SIGNATURE_CHECK=true
+      - USE_CHAN_SIP=true
     volumes:
       - backup:/backup
       - recordings:/var/spool/asterisk/monitor

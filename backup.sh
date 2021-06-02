@@ -1,15 +1,19 @@
 #!/bin/bash
+VER="15.0"
 while /bin/true; do
   echo "Waiting 1h for the next automatic backup..."
   sleep 3600
-  echo "Running backup and storing to /backup/new.tgz..."
+  echo "Running backup and storing to /backup/$VER/new.tgz..."
+  mkdir -p /backup/$VER
   cd /backup
   fwconsole bu --backup aadcce81-6b19-4d59-8321-057a716f3a83
   if [ "$?" != "0" ]; then
     echo "Error creating automatic backup"
   else
-    mv /backup/new.tar.gz /backup/old.tar.gz
-    mv 2* new.tar.gz
-    echo "Backup saved to /backup/new.tar.gz"
+    if [ -f $VER/new.tar.gz ]; then 
+      mv $VER/new.tar.gz $VER/old.tar.gz
+    fi
+    mv 2* $VER/new.tar.gz
+    echo "Backup saved to /backup/$VER/new.tar.gz"
   fi
 done

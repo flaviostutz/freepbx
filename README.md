@@ -91,14 +91,14 @@ network:
 * **RTP_FINISH** - port range to for RTP. defaults to 18100
 * **SIP_NAT_IP** - SIP NAT Public IP for calls. defaults to ip got from "curl ifconfig.me"
 * **USE_CHAN_SIP** - if true, disables pjsip and enables legacy chan_sip engine. defaults to false, meaning it will use pjsip engine by default
-* **ENABLE_AUTO_RESTORE** - if true, when a new container instance is run, it will try to restore an existing backup from /backup/new.tar.gz. This backup is created each one hour automatically. This is useful when creating a new container instance (all MYSQL and other data is lost), so that your configurations are kept. defaults to true
+* **ENABLE_AUTO_RESTORE** - if true, when a new container instance is run, it will try to restore an existing backup from /backup/[FreePBX ver]/new.tar.gz. This backup is created each one hour automatically. This is useful when creating a new container instance (all MYSQL and other data is lost), so that your configurations are kept. defaults to true
 * **ENABLE_DELETE_OLD_RECORDINGS** - Delete all recordings older than 60 days if enabled. defaults to true
 * **DISABLE_SIGNATURE_CHECK** - Disables module signature checks so that configuration reloads are way faster. Disable if you know what module signing protection means. defaults to false
 * **CERTIFICATE_DOMAIN** - certificate domain name when generating site certs with let's encrypt. this is used to locate certificated by name in /etc/asterisk/keys/ and configure Apache to use it automatically. defaults to ''
 
 ## Volumes
 
-* **/backup** - keeps new.tar.gz and old.tar.gz automatic backups. Default backup job stores backup there too.
+* **/backup** - keeps new.tar.gz and old.tar.gz automatic backups. Default backup job stores backup there too. Backups are store inside a directory with freepbx version. Backup restore between different versions is not supported by Freepbx.
 * **/var/spool/asterisk/monitor** - call recording storage location
 
 * **/etc/asterisk/keys** - Let's Encrypt and self signed certificates pub/private keys generated in pbxadmin

@@ -1,5 +1,5 @@
 # FROM flaviostutz/asterisk
-FROM flaviostutz/asterisk:16.9.0.1
+FROM flaviostutz/asterisk:16.18.0.1
 
 ENV RTP_START '18000'
 ENV RTP_FINISH '18100'
@@ -28,6 +28,7 @@ RUN apt-get update && \
     apt-get update && \
     apt-get install -y php5.6 php5.6-curl php5.6-cli php5.6-mysql php-pear php5.6-gd \
                        php5.6-xml php5.6-mbstring && \
+    apt-get install -y libodbc1 odbcinst odbcinst1debian2 && \
     apt-get update  && \
     apt-get -o Dpkg::Options::="--force-confold" upgrade -y
 
@@ -120,6 +121,8 @@ ADD freepbx_chown.conf /etc/asterisk/
 #enable https in admin
 RUN a2ensite default-ssl && \
     a2enmod ssl
+
+RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
 
 CMD [ "/startup.sh" ]
 

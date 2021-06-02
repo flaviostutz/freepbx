@@ -55,9 +55,10 @@ fi
 if [ ! -f /init ]; then
 
   #restore previous backup if exists
-  if [ "$ENABLE_AUTO_RESTORE" == "true" ] && [ -f /backup/new.tar.gz ]; then
-    echo "Restoring backup from /backup/new.tar.gz"
-    fwconsole backup --restore /backup/new.tar.gz
+  VER="15.0"
+  if [ "$ENABLE_AUTO_RESTORE" == "true" ] && [ -f /backup/$VER/new.tar.gz ]; then
+    echo "Restoring backup from /backup/$VER/new.tar.gz"
+    fwconsole backup --restore /backup/$VER/new.tar.gz
     echo "Done"
 
   #apply initial configurations
