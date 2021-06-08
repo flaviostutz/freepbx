@@ -9,6 +9,12 @@ With this container you can create a telephony system in your office or house wi
 
 If "Apply" is taking too long, disable "Module signature check" (if you know what you're doing).
 
+Security considerations:
+
+* Turn off SIP Guest on Settings -> Sip settings
+
+* Enable fail2ban with ENV FAIL2BAN_ENABLE=true (you have to run this container in privileged mode for this to work)
+
 Thanks to https://github.com/tiredofit/docker-freepbx for various insights on the new Asterisk 15 installation.
 
 This image is used in production deployments.
@@ -93,6 +99,12 @@ network:
 * **USE_CHAN_SIP** - if true, disables pjsip and enables legacy chan_sip engine. defaults to false, meaning it will use pjsip engine by default
 * **ENABLE_AUTO_RESTORE** - if true, when a new container instance is run, it will try to restore an existing backup from /backup/[FreePBX ver]/new.tar.gz. This backup is created each one hour automatically. This is useful when creating a new container instance (all MYSQL and other data is lost), so that your configurations are kept. defaults to true
 * **ENABLE_DELETE_OLD_RECORDINGS** - Delete all recordings older than 60 days if enabled. defaults to true
+
+* **FAIL2BAN_ENABLE** - enable fail2ban on asterisk logs. If set, this container needs to run in "privileged" mode because it needs to change iptables configurations. defaults to 'false'
+* **FAIL2BAN_FINDTIME** - Time window in which failed retries will be evaluated. Defaults to '600' seconds
+* **FAIL2BAN_MAXRETRY** - Number of failed attempts inside "findtime" window. Defaults to '15' retries
+* **FAIL2BAN_BANTIME** - Time a specific IP will be banned after too many failed retries. Defaults to '259200' seconds.
+
 * **DISABLE_SIGNATURE_CHECK** - Disables module signature checks so that configuration reloads are way faster. Disable if you know what module signing protection means. defaults to false
 * **CERTIFICATE_DOMAIN** - certificate domain name when generating site certs with let's encrypt. this is used to locate certificated by name in /etc/asterisk/keys/ and configure Apache to use it automatically. defaults to ''
 
