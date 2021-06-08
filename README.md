@@ -96,6 +96,15 @@ network:
 * **DISABLE_SIGNATURE_CHECK** - Disables module signature checks so that configuration reloads are way faster. Disable if you know what module signing protection means. defaults to false
 * **CERTIFICATE_DOMAIN** - certificate domain name when generating site certs with let's encrypt. this is used to locate certificated by name in /etc/asterisk/keys/ and configure Apache to use it automatically. defaults to ''
 
+## Fail2Ban
+
+* Enter freepbx container with `docker exec -it [containerid] bash`
+* For unbanning
+  * Run `fail2ban-client set sshd unbanip 192.168.1.69` OR
+  * Run `fail2ban-client unban --all`
+* For listing all banned ips:
+  * Run `fail2ban-client status asterisk-iptables`
+
 ## Volumes
 
 * **/backup** - keeps new.tar.gz and old.tar.gz automatic backups. Default backup job stores backup there too. Backups are store inside a directory with freepbx version. Backup restore between different versions is not supported by Freepbx.

@@ -1,4 +1,3 @@
-# FROM flaviostutz/asterisk
 FROM flaviostutz/asterisk:16.18.0.1
 
 ENV RTP_START '18000'
@@ -6,6 +5,11 @@ ENV RTP_FINISH '18100'
 ENV ADMIN_PASSWORD ''
 ENV USE_CHAN_SIP 'false'
 ENV ENABLE_AUTO_RESTORE 'true'
+ENV BACKUP_TIMER '3600'
+ENV FAIL2BAN_ENABLE 'true'
+ENV FAIL2BAN_FINDTIME '600'
+ENV FAIL2BAN_MAXRETRY '15'
+ENV FAIL2BAN_BANTIME '259200'
 ENV ENABLE_DELETE_OLD_RECORDINGS 'true'
 ENV DISABLE_SIGNATURE_CHECK 'false'
 ENV MARIADB_REMOTE_ROOT_PASSWORD ''
@@ -97,6 +101,11 @@ RUN /etc/init.d/mysql start && \
     chown asterisk:asterisk -R /var/www/html && \
     sed -i 's/www-data/asterisk/g' /etc/apache2/envvars && \
 	rm -rf /usr/src/freepbx*
+
+# Fail2Ban
+RUN apt-get install -y fail2ban
+ADD fail2ban-jail.conf /etc/fail2ban/jail.d/
+RUN rm /etc/fail2ban/jail.d/defaults-debian.conf
 
 # Optional tools
 RUN apt-get install --no-install-recommends -y tcpdump tcpflow whois sipsak sngrep

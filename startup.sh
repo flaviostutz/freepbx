@@ -13,6 +13,28 @@ chown -R asterisk:asterisk /backup
 
 
 
+
+#Fail2Ban
+if [ "$FAIL2BAN_ENABLE" == "true" ]; then
+  set +e
+  iptables-legacy -L
+  if [ "$?" != "0" ]; then
+    echo "For enabling fail2ban you have to run this container with 'privileged: true'"
+    exit 1
+  fi
+  set -e
+  echo "Enabling fail2ban for asterisk logs at /var/log/asterisk/full"
+  sed -i "s|\$FAIL2BAN_FINDTIME|$FAIL2BAN_FINDTIME|g" /etc/fail2ban/jail.d/fail2ban-jail.conf
+  sed -i "s|\$FAIL2BAN_MAXRETRY|$FAIL2BAN_MAXRETRY|g" /etc/fail2ban/jail.d/fail2ban-jail.conf
+  sed -i "s|\$FAIL2BAN_BANTIME|$FAIL2BAN_BANTIME|g" /etc/fail2ban/jail.d/fail2ban-jail.conf
+  mkdir /var/run/fail2ban
+  echo "Starting fail2ban server"
+  fail2ban-server
+fi
+
+
+
+
 echo "Starting MySQL..."
 /etc/init.d/mysql start
 status=$?

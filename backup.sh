@@ -1,8 +1,8 @@
 #!/bin/bash
 VER="15.0"
 while /bin/true; do
-  echo "Waiting 1h for the next automatic backup..."
-  sleep 3600
+  echo "Waiting $BACKUP_TIMER seconds for the next automatic backup..."
+  sleep $BACKUP_TIMER
   echo "Running backup and storing to /backup/$VER/new.tgz..."
   mkdir -p /backup/$VER
   cd /backup
