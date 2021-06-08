@@ -10,6 +10,7 @@ ENV FAIL2BAN_ENABLE 'true'
 ENV FAIL2BAN_FINDTIME '600'
 ENV FAIL2BAN_MAXRETRY '15'
 ENV FAIL2BAN_BANTIME '259200'
+ENV FAIL2BAN_WHITELIST ''
 ENV ENABLE_DELETE_OLD_RECORDINGS 'true'
 ENV DISABLE_SIGNATURE_CHECK 'false'
 ENV MARIADB_REMOTE_ROOT_PASSWORD ''
@@ -105,6 +106,7 @@ RUN /etc/init.d/mysql start && \
 # Fail2Ban
 RUN apt-get install -y fail2ban
 ADD fail2ban-jail.conf /etc/fail2ban/jail.d/
+ADD jail.local /etc/fail2ban/
 RUN rm /etc/fail2ban/jail.d/defaults-debian.conf
 
 # Optional tools

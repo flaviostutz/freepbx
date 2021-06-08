@@ -24,6 +24,7 @@ if [ "$FAIL2BAN_ENABLE" == "true" ]; then
   fi
   set -e
   echo "Enabling fail2ban for asterisk logs at /var/log/asterisk/full"
+  sed -i "s|\$FAIL2BAN_IGNOREIPS|$FAIL2BAN_IGNOREIPS|g" /etc/fail2ban/jail.local
   sed -i "s|\$FAIL2BAN_FINDTIME|$FAIL2BAN_FINDTIME|g" /etc/fail2ban/jail.d/fail2ban-jail.conf
   sed -i "s|\$FAIL2BAN_MAXRETRY|$FAIL2BAN_MAXRETRY|g" /etc/fail2ban/jail.d/fail2ban-jail.conf
   sed -i "s|\$FAIL2BAN_BANTIME|$FAIL2BAN_BANTIME|g" /etc/fail2ban/jail.d/fail2ban-jail.conf

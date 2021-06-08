@@ -104,6 +104,7 @@ network:
 * **FAIL2BAN_FINDTIME** - Time window in which failed retries will be evaluated. Defaults to '600' seconds
 * **FAIL2BAN_MAXRETRY** - Number of failed attempts inside "findtime" window. Defaults to '15' retries
 * **FAIL2BAN_BANTIME** - Time a specific IP will be banned after too many failed retries. Defaults to '259200' seconds.
+* **FAIL2BAN_IGNOREIPS** - Comma/space separated list of IPs to be ignored on fail2ban (will never ban)
 
 * **DISABLE_SIGNATURE_CHECK** - Disables module signature checks so that configuration reloads are way faster. Disable if you know what module signing protection means. defaults to false
 * **CERTIFICATE_DOMAIN** - certificate domain name when generating site certs with let's encrypt. this is used to locate certificated by name in /etc/asterisk/keys/ and configure Apache to use it automatically. defaults to ''
