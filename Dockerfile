@@ -32,7 +32,7 @@ RUN apt-get update && \
     echo "deb https://packages.sury.org/php/ buster main" > /etc/apt/sources.list.d/deb.sury.org.list && \
     apt-get update && \
     apt-get install -y php5.6 php5.6-curl php5.6-cli php5.6-mysql php-pear php5.6-gd \
-                       php5.6-xml php5.6-mbstring && \
+                       php5.6-xml php5.6-mbstring php5.6-ldap && \
     apt-get install -y libodbc1 odbcinst odbcinst1debian2 && \
     apt-get update  && \
     apt-get -o Dpkg::Options::="--force-confold" upgrade -y
@@ -67,9 +67,8 @@ RUN    sed -i -e "s/memory_limit = 128M/memory_limit = 256M/g" /etc/php/5.6/apac
     a2enmod rewrite && \
     a2enmod headers && \
     rm -rf /var/log/* && \
-    mkdir -p /var/log/asterisk && \
-    mkdir -p /var/log/apache2 && \
-    mkdir -p /var/log/httpd
+    mkdir -p /var/log/asterisk /var/log/apache2 /var/log/httpd /var/log/mysql && \
+    chown mysql. /var/log/mysql
 
 # FreePBX dependencies
 RUN curl --silent https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - && \
