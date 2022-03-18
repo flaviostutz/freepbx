@@ -13,7 +13,7 @@ while /bin/true; do
     if [ -f $VER/new.tar.gz ]; then 
       mv $VER/new.tar.gz $VER/old.tar.gz
     fi
-    mv 2* $VER/new.tar.gz
+    ls *.tar.gz -tr | tail -n 1 | xargs -I{} mv {} $VER/new.tar.gz
     echo "Backup saved to /backup/$VER/new.tar.gz"
   fi
 done
